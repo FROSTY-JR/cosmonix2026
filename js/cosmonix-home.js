@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
-// COSMONIX 26 — static homepage scene.
-// No launch sequence, rocket models, audio, or animation loop.
+// COSMONIX 26 — normal homepage scene.
+// The launch sequence, rocket models and audio stay removed; only the ambient
+// planet rotation and event-moon orbits run here.
 
 const mount = document.getElementById('cosmonix-scene');
 if (!mount) throw new Error('COSMONIX: #cosmonix-scene not found.');
@@ -136,13 +137,15 @@ earthGroup.add(atmosphereRing);
 earthGroup.rotation.set(0.08, -0.42, THREE.MathUtils.degToRad(-8));
 
 const eventData = [
-    { radius: 6.0, phase: 0.4, tilt: 0.18, color: 0x52e7ff, size: 0.34 },
-    { radius: 5.65, phase: 2.1, tilt: -0.20, color: 0x76a7ff, size: 0.28 },
-    { radius: 6.25, phase: 3.7, tilt: 0.30, color: 0xb2ffdc, size: 0.31 },
-    { radius: 5.75, phase: 4.8, tilt: 0.42, color: 0x63c8ff, size: 0.27 },
-    { radius: 6.15, phase: 5.65, tilt: -0.38, color: 0x8bffcb, size: 0.30 },
-    { radius: 5.85, phase: 1.15, tilt: -0.48, color: 0xc2d8ff, size: 0.25 }
+    { radius: 6.0, phase: 0.4, tilt: 0.18, speed: 0.115, color: 0x52e7ff, size: 0.34 },
+    { radius: 5.65, phase: 2.1, tilt: -0.20, speed: 0.138, color: 0x76a7ff, size: 0.28 },
+    { radius: 6.25, phase: 3.7, tilt: 0.30, speed: 0.094, color: 0xb2ffdc, size: 0.31 },
+    { radius: 5.75, phase: 4.8, tilt: 0.42, speed: 0.126, color: 0x63c8ff, size: 0.27 },
+    { radius: 6.15, phase: 5.65, tilt: -0.38, speed: 0.103, color: 0x8bffcb, size: 0.30 },
+    { radius: 5.85, phase: 1.15, tilt: -0.48, speed: 0.132, color: 0xc2d8ff, size: 0.25 }
 ];
+
+const eventMoons = [];
 
 function makeOrbit(radius, tilt) {
     const curve = new THREE.EllipseCurve(0, 0, radius, radius * 0.88, 0, Math.PI * 2);
@@ -158,11 +161,6 @@ function makeOrbit(radius, tilt) {
 for (const data of eventData) {
     orbitGroup.add(makeOrbit(data.radius, data.tilt));
     const moon = new THREE.Group();
-    moon.position.set(
-        Math.cos(data.phase) * data.radius,
-        Math.sin(data.phase) * data.radius * 0.10,
-        Math.sin(data.phase) * data.radius * 0.88
-    );
     moon.add(new THREE.Mesh(
         new THREE.IcosahedronGeometry(data.size, 2),
         new THREE.MeshStandardMaterial({
@@ -178,15 +176,25 @@ for (const data of eventData) {
         new THREE.MeshBasicMaterial({ color: data.color, transparent: true, opacity: 0.045 })
     ));
     orbitGroup.add(moon);
+    eventMoons.push({ group: moon, ...data });
 }
 
-function renderStaticScene() {
+function positionMoon(moon, angle) {
+    const x = Math.cos(angle) * moon.radius;
+    const orbitDepth = Math.sin(angle) * moon.radius * 0.88;
+    moon.group.position.set(
+        x,
+        -orbitDepth * Math.sin(moon.tilt),
+        orbitDepth * Math.cos(moon.tilt)
+    );
+}
+
+function setSceneLayout() {
     const earthPosition = getEarthPosition();
     earthGroup.position.copy(earthPosition);
     orbitGroup.position.copy(earthPosition);
     camera.position.copy(getCameraPosition());
     camera.lookAt(cameraTarget);
-    renderer.render(scene, camera);
 }
 
 function onResize() {
@@ -195,8 +203,32 @@ function onResize() {
     camera.updateProjectionMatrix();
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderStaticScene();
+    setSceneLayout();
 }
 
 window.addEventListener('resize', onResize);
-renderStaticScene();
+
+setSceneLayout();
+eventMoons.forEach(moon => positionMoon(moon, moon.phase));
+
+const clock = new THREE.Clock();
+let elapsed = 0;
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    // Clamp the delta so returning to a backgrounded tab never causes a jump.
+    elapsed += Math.min(clock.getDelta(), 0.05);
+    earthGroup.rotation.y = -0.42 + elapsed * 0.075;
+    atmosphereRing.rotation.z = elapsed * 0.035;
+
+    for (const moon of eventMoons) {
+        positionMoon(moon, moon.phase + elapsed * moon.speed);
+        moon.group.rotation.y = elapsed * 0.35;
+        moon.group.rotation.x = elapsed * 0.16;
+    }
+
+    renderer.render(scene, camera);
+}
+
+animate();
