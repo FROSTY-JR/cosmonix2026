@@ -21,6 +21,14 @@ html, body {
     overflow: hidden;
 }
 
+/* The homepage is intentionally motionless. Interactive states remain immediate. */
+body.static-homepage *,
+body.static-homepage *::before,
+body.static-homepage *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
 a { color: inherit; text-decoration: none; }
 
 .hero {
@@ -73,10 +81,10 @@ a { color: inherit; text-decoration: none; }
     top: 0;
     left: 0;
     width: 100%;
-    height: 88px;
+    height: 124px;
     padding: 0 5vw;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     z-index: 10;
     border-bottom: 1px solid rgba(255,255,255,0.07);
@@ -85,33 +93,91 @@ a { color: inherit; text-decoration: none; }
 }
 
 .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding-top: 10px;
     font-weight: 700;
     letter-spacing: 0.16em;
 }
 
-.brand-mark {
-    width: 27px;
-    height: 27px;
-    display: grid;
-    place-items: center;
-    border: 1px solid rgba(82,231,255,0.8);
-    border-radius: 50%;
-    color: var(--cyan);
-    font-size: 11px;
-    box-shadow: 0 0 18px rgba(82,231,255,0.18);
+.brand-primary {
+    display: flex;
+    align-items: center;
+    gap: 11px;
 }
 
-.brand-name { font-size: 14px; }
-.brand-name span { color: var(--cyan); font-weight: 500; }
+.brand-college-logo {
+    width: 54px;
+    height: 54px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,.12));
+}
+
+.brand-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 255px;
+}
+
+.brand-title {
+    color: #f2fbff;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: .035em;
+    text-transform: none;
+}
+
+.brand-title span { color: var(--cyan); font-weight: 500; }
+
+.brand-tagline {
+    color: rgba(82, 231, 255, .68);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: .105em;
+    text-transform: uppercase;
+}
+
+.brand-accreditations {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 39px;
+    margin-left: 1px;
+}
+
+.brand-nba-crop {
+    position: relative;
+    width: 60px;
+    height: 36px;
+    overflow: hidden;
+}
+
+.brand-nba-crop img {
+    position: absolute;
+    width: 140px;
+    height: auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -47%);
+}
+
+.brand-naac-logo {
+    width: 45px;
+    height: 36px;
+    object-fit: contain;
+}
 
 .nav-links {
     display: flex;
     align-items: center;
     gap: clamp(24px, 4vw, 58px);
     margin-left: 9vw;
+    padding-top: 38px;
 }
 
 .nav-links a {
@@ -139,11 +205,15 @@ a { color: inherit; text-decoration: none; }
 .nav-links a:hover::after { width: 100%; }
 
 .nav-register {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 26px;
     padding: 11px 17px;
     border: 1px solid rgba(255,255,255,0.22);
     border-radius: 999px;
     color: #fff;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -151,7 +221,6 @@ a { color: inherit; text-decoration: none; }
     transition: all .25s ease;
 }
 
-.nav-register span { color: var(--cyan); margin-left: 5px; }
 .nav-register:hover { border-color: var(--cyan); background: rgba(82,231,255,0.08); }
 
 .hero-crest {
@@ -176,7 +245,7 @@ a { color: inherit; text-decoration: none; }
 .eyebrow {
     margin: 0 0 20px;
     color: rgba(255,255,255,0.52);
-    font-size: 10px;
+    font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.28em;
 }
@@ -286,6 +355,77 @@ h1 em {
 .scene-note { left: 5vw; }
 .scene-instruction { right: 5vw; }
 
+.event-countdown {
+    position: absolute;
+    right: 5vw;
+    bottom: 26px;
+    z-index: 7;
+    width: min(340px, 88vw);
+    min-width: 0;
+    padding: 12px 13px 11px;
+    border: 1px solid rgba(82, 231, 255, .20);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(3, 13, 19, .74), rgba(3, 10, 15, .38));
+    box-shadow: 0 14px 45px rgba(0, 0, 0, .28), inset 0 0 24px rgba(82, 231, 255, .025);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.event-countdown-heading {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 8px;
+    color: rgba(181, 235, 246, .60);
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .24em;
+}
+
+.event-countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.event-countdown-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 0 8px;
+    border-left: 1px solid rgba(255,255,255,.09);
+}
+
+.event-countdown-grid > div:first-child { padding-left: 0; border-left: 0; }
+.event-countdown-grid > div:last-child { padding-right: 0; }
+
+.event-countdown strong {
+    color: #effcff;
+    font-size: clamp(17px, 1.6vw, 22px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: .04em;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 18px rgba(82, 231, 255, .22);
+}
+
+.event-countdown-grid span,
+.event-countdown time {
+    color: rgba(231, 238, 246, .42);
+    font-size: 6px;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.event-countdown time {
+    display: block;
+    margin-top: 8px;
+    color: rgba(82, 231, 255, .58);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-align: right;
+}
+
 .pulse-dot {
     width: 5px;
     height: 5px;
@@ -311,9 +451,18 @@ h1 em {
 @media (max-width: 680px) {
     html, body { overflow: hidden; }
     .hero { min-height: 600px; }
-    .navbar { height: 72px; padding: 0 6vw; }
+    .navbar { height: 108px; padding: 0 6vw; }
+    .brand { padding-top: 7px; }
+    .brand-college-logo { width: 44px; height: 44px; }
+    .brand-copy { min-width: 0; max-width: 190px; gap: 3px; }
+    .brand-title { font-size: 11px; line-height: 1.1; }
+    .brand-tagline { font-size: 6px; letter-spacing: .07em; }
+    .brand-accreditations { height: 30px; }
+    .brand-nba-crop { width: 48px; height: 29px; }
+    .brand-nba-crop img { width: 112px; }
+    .brand-naac-logo { width: 37px; height: 29px; }
     .nav-links { display: none; }
-    .nav-register { padding: 9px 13px; }
+    .nav-register { margin-top: 20px; padding: 9px 13px; }
     .hero-crest { width: 104px; margin-bottom: 12px; opacity: .78; }
     .hero-copy { left: 7vw; top: 53%; width: 86vw; transform: translateY(-50%); }
     .eyebrow { font-size: 8px; letter-spacing: .2em; }
@@ -321,6 +470,9 @@ h1 em {
     .hero-description { font-size: 12px; max-width: 320px; }
     .scroll-hint { margin-top: 46px; }
     .scene-note { display: none; }
+    .event-countdown { right: 6vw; bottom: 18px; width: min(340px, 88vw); padding: 11px 11px 10px; }
+    .event-countdown-grid > div { padding: 0 7px; }
+    .event-countdown strong { font-size: 18px; }
     .scene-instruction { right: 7vw; bottom: 20px; }
     .space-vignette { background: linear-gradient(90deg, rgba(2,4,7,0.92) 0%, rgba(2,4,7,0.55) 58%, rgba(2,4,7,0.24) 100%), linear-gradient(0deg, rgba(2,4,7,0.62), transparent 40%); }
 }
@@ -394,7 +546,8 @@ h1 em {
 body.ceremony-active .navbar,
 body.ceremony-active .hero-copy,
 body.ceremony-active .scene-note,
-body.ceremony-active .scene-instruction {
+body.ceremony-active .scene-instruction,
+body.ceremony-active .event-countdown {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -404,7 +557,8 @@ body.ceremony-active .scene-instruction {
 body.website-live .navbar,
 body.website-live .hero-copy,
 body.website-live .scene-note,
-body.website-live .scene-instruction {
+body.website-live .scene-instruction,
+body.website-live .event-countdown {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -422,7 +576,8 @@ html.skip-launch #final-reveal {
 html.skip-launch body.ceremony-active .navbar,
 html.skip-launch body.ceremony-active .hero-copy,
 html.skip-launch body.ceremony-active .scene-note,
-html.skip-launch body.ceremony-active .scene-instruction {
+html.skip-launch body.ceremony-active .scene-instruction,
+html.skip-launch body.ceremony-active .event-countdown {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;

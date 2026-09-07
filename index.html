@@ -5,49 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#020407">
     <title>COSMONIX26 — Aerospace Technical Fest</title>
-    <script>
-        try {
-            const params = new URLSearchParams(window.location.search);
-            const launchWasSeen = sessionStorage.getItem('cosmonixLaunchSeen') === 'true';
-            if (params.get('skipLaunch') === 'true' || launchWasSeen) {
-                document.documentElement.classList.add('skip-launch');
-            }
-        } catch (error) {
-            // The full scene script will fall back to the normal ceremony.
-        }
-    </script>
     <link rel="stylesheet" href="style.css">
+    <script defer src="js/countdown.js"></script>
 </head>
-<body class="ceremony-active">
+<body class="website-live static-homepage">
     <div id="cosmonix-scene" aria-hidden="true"></div>
-
-    <div id="launch-ui">
-        <div class="launch-ui-top">
-            <div class="launch-ui-kicker">ACS COLLEGE OF ENGINEERING</div>
-            <div class="launch-ui-title">COSMONIX 26</div>
-            <div id="launch-status">.    .</div>
-        </div>
-
-        <div id="countdown-display" aria-live="polite">T-10</div>
-
-        <div class="launch-ui-bottom">
-            <div class="launch-system-line">
-                <span class="launch-system-dot"></span>
-                <span>LAUNCH SYSTEM READY</span>
-            </div>
-            <button id="initiate-sequence" type="button">
-                <span class="initiate-label">Initiate</span>
-                <span class="initiate-title">Launch Sequence</span>
-                <span class="initiate-arrow" aria-hidden="true">T–10</span>
-            </button>
-        </div>
-    </div>
-
-    <div id="final-reveal" aria-hidden="true">
-        <div class="final-small">ALL SYSTEMS NOMINAL</div>
-        <div class="final-title">COSMONIX 26</div>
-        <div class="final-live">NOW LIVE</div>
-    </div>
 
     <main class="hero" id="home">
         <div class="space-vignette" aria-hidden="true"></div>
@@ -55,8 +17,14 @@
 
         <header class="navbar">
             <a class="brand" href="index.html" aria-label="Cosmonix 26 home">
-                <span class="brand-mark">C</span>
-                <span class="brand-name">COSMONIX<span>26</span></span>
+                <span class="brand-primary">
+                    <img class="brand-college-logo" src="assets/branding/acs-college.png" alt="Dr. ACS College of Engineering">
+                    <span class="brand-copy">
+                        <strong class="brand-title">Dr ACS College Of Engineering <span></span></strong>
+                        <span class="brand-tagline">Department of Aerospace Engineering</span>
+                    </span>
+                </span>
+
             </a>
 
             <nav class="nav-links" aria-label="Primary navigation">
@@ -65,23 +33,23 @@
                 <a href="pages/contact.html">Contact</a>
             </nav>
 
-            <a class="nav-register" href="https://docs.google.com/forms/d/e/1FAIpQLSdu9bDfW3q5FqeM1rt-X4mJ7wAaYHbWGkNPcAWc9x0mkflUzw/viewform" target="_blank" rel="noopener noreferrer">
-                Register <span>↗</span>
+            <a class="nav-register" href="https://docs.google.com/forms/d/e/1FAIpQLSc7vWckMelsRMZwQo0_1cA9ouCj58LhPUiu5LJX96BVqOdo4g/viewform" target="_blank" rel="noopener noreferrer">
+                Register
             </a>
         </header>
 
         <section class="hero-copy">
-            <p class="eyebrow">AEROSPACE ENGINEERING · TECHNICAL FEST</p>
+            <p class="eyebrow">NATIONAL LEVEL TECHNICAL SYMPOSIUM</p>
             <img class="hero-crest" src="pages/images/clogo.png" alt="Cosmonix 26 astronaut logo">
             <h1>COSMONIX 26</h1>
             <p class="hero-description">
-                DEPARTMENT OF AEROSPACE,<br>
-                ACS COLLEGE OF ENGINEERING
+                Where Ideas Defy Gravity,<br>
+                Dr. ACS COLLEGE OF ENGINEERING
             </p>
 
             <div class="hero-actions">
                 <a class="primary-btn" href="pages/exploar.html">Explore <span></span></a>
-                <a class="secondary-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSdu9bDfW3q5FqeM1rt-X4mJ7wAaYHbWGkNPcAWc9x0mkflUzw/viewform" target="_blank" rel="noopener noreferrer">
+                <a class="secondary-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSc7vWckMelsRMZwQo0_1cA9ouCj58LhPUiu5LJX96BVqOdo4g/viewform" target="_blank" rel="noopener noreferrer">
                     Register <span></span>
                 </a>
             </div>
@@ -91,19 +59,30 @@
             <span class="pulse-dot"></span>
             <span>LIVE FROM THE AEROSPACE LAB</span>
         </div>
-    </main>
 
-    <audio id="launch-music" src="assets/audio/cosmonix-launch.mp3" preload="auto"></audio>
+        <section class="event-countdown" role="timer" aria-label="Countdown to COSMONIX 26 on 8 October 2026 at 9 AM">
+            <div class="event-countdown-heading">
+                <span class="pulse-dot"></span>
+                <span id="event-countdown-label">T– EVENT OPENING</span>
+            </div>
+            <div class="event-countdown-grid">
+                <div><strong id="countdown-days">00</strong><span>Days</span></div>
+                <div><strong id="countdown-hours">00</strong><span>Hours</span></div>
+                <div><strong id="countdown-minutes">00</strong><span>Mins</span></div>
+                <div><strong id="countdown-seconds">00</strong><span>Secs</span></div>
+            </div>
+            <time datetime="2026-10-08T09:00:00+05:30">08 OCT 2026 · 09:00 IST</time>
+        </section>
+    </main>
 
     <script type="importmap">
     {
         "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+            "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
         }
     }
     </script>
 
-    <script type="module" src="js/cosmonix.js"></script>
+    <script type="module" src="js/cosmonix-home.js"></script>
 </body>
 </html>
