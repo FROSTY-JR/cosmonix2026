@@ -454,7 +454,7 @@ header nav > div {
 }
 
 header nav > div::before {
-    content: 'COSMONIX24';
+    content: 'COSMONIX26';
     margin-right: 28px;
     color: #f5f7fa;
     font-size: 14px;
